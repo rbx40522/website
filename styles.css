@@ -150,7 +150,7 @@ li {
     color: #ffffff;
     font-family: "Jacquard 12", serif;
     padding-left: 0%;
-    font-size : clamp(1rem, 10vw, 2rem);
+    font-size : clamp(2rem, 10vw, 2rem);
     width: 100%;
     margin-bottom:0.5%;
 
