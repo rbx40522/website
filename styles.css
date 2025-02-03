@@ -1,0 +1,178 @@
+body {
+    background: rgb(114, 114, 114);
+    background: linear-gradient(90deg, rgba(114, 114, 114, 1) 0%, rgba(239, 239, 239, 1) 100%);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+img {
+    vertical-align: middle;
+    border-style: none;
+}
+
+#starsLeft {
+    position: absolute;
+    left: 0;
+    top: 5%;
+    opacity: 0.7;
+    z-index: 2;
+}
+
+#starsRight {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 5%;
+    opacity: 0.7;
+}
+
+#mainDiv {
+    color: #ffffffef;
+    top: 3%;
+    left: 0%;
+    position: absolute;
+    z-index: 8;
+    align-items: left;
+    justify-content: left;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+
+
+h1 {
+    font-size: 2.25rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-top: 0;
+}
+
+@keyframes Animation {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 0%;
+    }
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+
+.shooting_star {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(-45deg, rgba(95, 145, 255, 1), rgba(0, 0, 255, 0));
+    border-radius: 999px;
+    filter: drop-shadow(0 0 6px rgba(105, 155, 255, 1));
+    animation:
+        tail 3000ms ease-in-out,
+        shooting 3000ms ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+@keyframes tail {
+    0% {
+        width: 0;
+    }
+
+    30% {
+        width: 100px;
+    }
+
+    100% {
+        width: 0;
+    }
+}
+
+@keyframes shooting {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(300px);
+    }
+}
+
+.video {
+    height: 100%;
+    width: 100%;
+    border: 0;
+}
+
+.video-container {
+    position: relative;
+    display: inline-block; /* Or 'block' depending on layout */
+}
+
+.video-container img {
+    display: block; /* Remove bottom space/margin under the image */
+    width: 100%; /* Adjust based on your needs */
+    height: auto;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    width: 64px; /* Adjust size of the play button */
+    height: 64px; /* Adjust size of the play button */
+}
+
+.jacquard-12-charted-regular {
+    font-family: "Jacquard 12 Charted", serif;
+    font-weight: 0;
+    font-style: normal;
+}
+.jacquard-12-regular {
+  font-family: "Jacquard 12", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+li {
+    text-align: left;
+    color: #ffffff;
+    font-family: "Jacquard 12", serif;
+    padding-left: 0%;
+    font-size: 22pt;
+    width: 100%;
+    margin-bottom:0.5%;
+
+    background-color: rgba(0, 0, 255, 0);
+opacity: 0.8;
+background-image:  linear-gradient(#b4abab 1px, transparent 1px), linear-gradient(to right, #9d9d9d 1px, rgba(229, 229, 247, 0) 1px);
+background-size: 3px 3px;
+}
+
+li.alt {
+    color: #ffffff;
+background-color: #e5e5f7;
+opacity: 0.8;
+background-image:  linear-gradient(#818181 1px, transparent 1px), linear-gradient(to right, #858585 1px, rgba(229, 229, 247, 0) 1px);
+background-size: 3px 3px;
+}
+
+span.line {
+  display: inline-block;
+}
+
+@media only screen and (max-width: 600px) { 
+  .hide-me { display: none; } 
+} 
