@@ -1,7 +1,6 @@
 body {
     background: rgb(114, 114, 114);
     background: linear-gradient(90deg, rgba(114, 114, 114, 1) 0%, rgba(239, 239, 239, 1) 100%);
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -151,7 +150,7 @@ li {
     color: #ffffff;
     font-family: "Jacquard 12", serif;
     padding-left: 0%;
-    font-size: 22pt;
+    font-size : clamp(1rem, 10vw, 2rem);
     width: 100%;
     margin-bottom:0.5%;
 
