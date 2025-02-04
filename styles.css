@@ -11,21 +11,6 @@ img {
     border-style: none;
 }
 
-#starsLeft {
-    position: absolute;
-    left: 0;
-    top: 5%;
-    opacity: 0.7;
-    z-index: 2;
-}
-
-#starsRight {
-    position: absolute;
-    z-index: 2;
-    right: 0;
-    top: 5%;
-    opacity: 0.7;
-}
 
 #mainDiv {
     color: #ffffffef;
@@ -61,44 +46,7 @@ h1 {
 }
 
 
-.shooting_star {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 100px;
-    height: 1px;
-    background: linear-gradient(-45deg, rgba(95, 145, 255, 1), rgba(0, 0, 255, 0));
-    border-radius: 999px;
-    filter: drop-shadow(0 0 6px rgba(105, 155, 255, 1));
-    animation:
-        tail 3000ms ease-in-out,
-        shooting 3000ms ease-in-out;
-    animation-fill-mode: forwards;
-}
 
-@keyframes tail {
-    0% {
-        width: 0;
-    }
-
-    30% {
-        width: 100px;
-    }
-
-    100% {
-        width: 0;
-    }
-}
-
-@keyframes shooting {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(300px);
-    }
-}
 
 .video {
     height: 100%;
@@ -150,9 +98,11 @@ li {
     color: #ffffff;
     font-family: "Jacquard 12", serif;
     padding-left: 0%;
-    font-size : clamp(2rem, 2vw, 2rem);
+    font-size: calc(0.75em + 2vmin);
     width: 100%;
     margin-bottom:0.5%;
+    padding-bottom: 0.1%;
+    padding-top: 0.1%;
 
     background-color: rgba(0, 0, 255, 0);
 opacity: 0.8;
