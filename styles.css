@@ -45,7 +45,7 @@ p {
   }
 }
 
-6@media (max-width: 599px) {
+@media (max-width: 599px) {
   p {
     font-size: 12px;
   }
