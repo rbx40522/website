@@ -1,6 +1,6 @@
 body {
 
-     background: #c9a5b7;   
+     background: #ffffff;   
      
 
   /* filter: contrast(170%) brightness(1000%); */
@@ -29,6 +29,11 @@ h1 {
     margin-top: 0;
 }
 
+h2 {
+    font-size: 1.38rem;
+    font-weight: 500;
+    margin-top: 0;
+}
 
 p {
     
@@ -140,4 +145,27 @@ border-bottom: 0.1rem dotte;
     background-color: green; 
     display: block;
     float: right;
+}
+
+/* Style for the email link */
+.email-link {
+  text-decoration: none; /* Remove the underline from the link */
+}
+
+/* Style for the h2 element */
+.email-header {
+  height: 50px;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Style for each part of the email */
+.email-part {
+  transform: rotate(-3deg);
+  margin-right: 2px; /* Optional: Adds space between the words */
+  font-family: ; /* Ensures consistent font for all parts */
+  letter-spacing: 0.5px; /* Optional: Adjust letter spacing for uniformity */
+  line-height: 1; /* Ensures consistent vertical alignment */
+  vertical-align: middle; /* Aligns all parts consistently */
 }
