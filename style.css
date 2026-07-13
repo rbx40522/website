@@ -1,0 +1,331 @@
+/* =============================================================
+   STYLE.CSS — hier past ALLE vormgeving in aan.
+   Bovenaan staan variabelen: pas een getal of een kleur aan
+   en je ziet het effect meteen.
+   ============================================================= */
+
+:root {
+  /* -- kleuren -- */
+  --achtergrond:         #060606;
+  --item-achtergrond:    #0a0a0a;   /* kleur onder het beeld tijdens laden */
+  --titel-kleur:         #ffffff;
+  --credit-kleur:        #ffffff;
+  --knop-kleur:          #ffffff;
+  --loader-kleur:        #888888;
+
+  /* -- rand (de omlijsting die inverteert) -- */
+  --rand-dikte:          clamp(14px, 2.4vw, 34px);
+
+  /* -- typografie -- */
+  --titel-font:          'Oswald', sans-serif;
+  --titel-grootte:       clamp(11px, 1.15vw, 16px);
+  --titel-letterspacing: 0.22em;
+  --credit-font:         'Inter', sans-serif;
+  --credit-grootte:      10px;
+  --credit-letterspacing: 0.14em;
+
+  /* -- de fade wanneer titel/credit van project wisselen -- */
+  --fade-duur:           .28s;
+
+  /* -- pauze-knop -- */
+  --knop-grootte:        40px;
+  --knop-icoon-grootte:  14px;
+  --knop-marge-rechts:   14px;
+  --knop-marge-onder:    12px;
+  --knop-opacity:        .55;
+}
+
+/* op mobiel iets ruimere rand zodat de titel leesbaar blijft */
+@media (max-width: 640px){
+  :root { --rand-dikte: clamp(22px, 6vw, 34px); }
+}
+
+
+/* =============================================================
+   BASIS
+   ============================================================= */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  width: 100%; height: 100%;
+  height: 100dvh;
+  background: var(--achtergrond);
+  overflow: hidden;
+  overscroll-behavior: none;
+  font-family: var(--credit-font), system-ui, sans-serif;
+}
+
+
+/* =============================================================
+   HET SCHUIVENDE BEELD (de "band")
+   ============================================================= */
+
+#stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--achtergrond);
+  touch-action: none;
+  cursor: grab;
+}
+#stage.dragging { cursor: grabbing; }
+
+#track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.item {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  background: var(--item-achtergrond);
+  contain: strict;
+  will-change: transform;
+  /* zachte randen zodat beelden in elkaar overlopen */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+.item img,
+.item video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+
+/* =============================================================
+   DE RAND (frame) — inverteert de pixels die er onder liggen.
+   Top en bottom over de volle breedte, links/rechts alleen
+   ertussenin, zodat geen enkel gebied dubbel inverteert.
+   ============================================================= */
+
+#frame {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.bar {
+  position: absolute;
+  background: rgba(0,0,0,0.001); /* nodig om backdrop-filter te activeren */
+  -webkit-backdrop-filter: invert(1);
+          backdrop-filter: invert(1);
+}
+.bar-top    { top: 0;              left: 0; right: 0;
+              height: var(--rand-dikte); }
+.bar-bottom { bottom: 0;           left: 0; right: 0;
+              height: var(--rand-dikte); }
+.bar-left   { top: var(--rand-dikte); bottom: var(--rand-dikte);
+              left: 0; width: var(--rand-dikte); }
+.bar-right  { top: var(--rand-dikte); bottom: var(--rand-dikte);
+              right: 0; width: var(--rand-dikte); }
+
+
+/* =============================================================
+   TITEL — zweeft over de bovenrand en is klikbaar
+   ============================================================= */
+
+#title {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--rand-dikte);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 6;
+  pointer-events: auto;
+  padding: 0 24px;
+  background: transparent;
+  border: 0;
+  font-family: var(--titel-font);
+  font-weight: 600;
+  letter-spacing: var(--titel-letterspacing);
+  text-transform: uppercase;
+  font-size: var(--titel-grootte);
+  color: var(--titel-kleur);
+  text-shadow: 0 1px 6px rgba(0,0,0,.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity var(--fade-duur) ease;
+}
+#title:hover,
+#title:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#title:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+#title.fade { opacity: 0; }
+#title[hidden] { display: none; }
+
+@media (max-width: 640px){
+  #title { font-size: 12px; letter-spacing: 0.16em; }
+}
+
+
+/* =============================================================
+   INFO-PANEEL — verschijnt onder de titel bij een klik
+   ============================================================= */
+
+#info-panel {
+  position: fixed;
+  top: var(--rand-dikte);
+  left: 0; right: 0;
+  z-index: 5;
+  display: flex; justify-content: center;
+  padding: 14px 24px 0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity var(--fade-duur) ease, transform var(--fade-duur) ease;
+}
+#info-panel.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#info-panel-inner {
+  max-width: 780px;
+  text-align: center;
+  font-family: var(--credit-font);
+  font-size: 12px;
+  letter-spacing: .08em;
+  line-height: 1.55;
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgba(0,0,0,.55);
+}
+#info-text { white-space: pre-wrap; }
+
+@media (max-width: 640px){
+  #info-panel { padding: 10px 18px 0; }
+  #info-panel-inner { font-size: 11.5px; }
+}
+
+
+/* =============================================================
+   FOTOGRAAF-CREDIT linksonder
+   ============================================================= */
+
+#corner {
+  position: fixed;
+  left: calc(var(--rand-dikte) + 14px);
+  bottom: calc(var(--rand-dikte) + 12px);
+  z-index: 6;
+  pointer-events: none;
+  font-family: var(--credit-font);
+  font-size: var(--credit-grootte);
+  letter-spacing: var(--credit-letterspacing);
+  text-transform: uppercase;
+  color: var(--credit-kleur);
+  opacity: .6;
+  text-shadow: 0 1px 5px rgba(0,0,0,.45);
+  transition: opacity var(--fade-duur) ease;
+}
+#corner.fade { opacity: 0; }
+
+@media (max-width: 640px){
+  #corner { display: none; }
+}
+
+
+/* =============================================================
+   EMAIL-KNOP rechtsonder, boven de pauze-knop
+   ============================================================= */
+
+#email {
+  position: fixed;
+  right: calc(var(--rand-dikte) + var(--knop-marge-rechts));
+  /* zit direct boven de pauze-knop: onder-marge + pauzeknop-hoogte + tussenruimte */
+  bottom: calc(var(--rand-dikte) + var(--knop-marge-onder) + var(--knop-grootte) + 10px);
+  z-index: 7;
+  width: var(--knop-grootte);
+  height: var(--knop-grootte);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  color: var(--knop-kleur);
+  text-decoration: none;
+  opacity: var(--knop-opacity);
+}
+#email:hover,
+#email:focus-visible { opacity: 1; }
+#email:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+#email svg {
+  width: var(--knop-icoon-grootte);
+  height: var(--knop-icoon-grootte);
+  display: block;
+}
+
+
+/* =============================================================
+   PAUZE-KNOP rechtsonder
+   ============================================================= */
+
+#pause {
+  position: fixed;
+  right: calc(var(--rand-dikte) + var(--knop-marge-rechts));
+  bottom: calc(var(--rand-dikte) + var(--knop-marge-onder));
+  z-index: 7;
+  width: var(--knop-grootte);
+  height: var(--knop-grootte);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  color: var(--knop-kleur);
+  cursor: pointer;
+  opacity: var(--knop-opacity);
+}
+#pause:hover,
+#pause:focus-visible { opacity: 1; }
+#pause:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+#pause svg {
+  width: var(--knop-icoon-grootte);
+  height: var(--knop-icoon-grootte);
+  display: block;
+}
+#pause .icon-play  { display: none; }
+#pause.paused .icon-pause { display: none; }
+#pause.paused .icon-play  { display: block; }
+
+
+/* =============================================================
+   LOADER (zwart scherm tijdens laden)
+   ============================================================= */
+
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--achtergrond);
+  color: var(--loader-kleur);
+  font-family: var(--credit-font);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: opacity .5s ease;
+}

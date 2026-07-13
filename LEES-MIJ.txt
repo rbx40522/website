@@ -1,0 +1,81 @@
+PORTFOLIO WEBSITE — ONDERHOUD
+=============================
+
+MAPPENSTRUCTUUR
+---------------
+index.html      structuur van de pagina (nauwelijks te wijzigen)
+style.css       ALLE vormgeving: kleuren, groottes, lettertypes
+config.js       gedrag: snelheid, remkracht, overlap, fade-tijd
+projects.js     inhoud: projecten, titels, links, fotografen, beelden
+app.js          de motor — NIET AANPASSEN
+media/          per project een map met foto's en video's
+LEES-MIJ.txt    dit bestand
+
+
+WAT PAS IK WAAR AAN?
+--------------------
+Wil je iets veranderen? Kijk hier eerst:
+
+Andere kleur / lettertype / titelgrootte / randdikte  →  style.css
+  Bovenaan style.css staan variabelen met duidelijke namen
+  (--achtergrond, --titel-kleur, --rand-dikte, enzovoort).
+  Pas de waarde aan, opslaan, ververs de pagina.
+
+Sneller/langzamer schuiven, ander sleepgedrag  →  config.js
+  Pas de getallen aan (snelheid, remkracht, overlap, wielimpuls).
+  Elke regel heeft een korte uitleg erboven.
+
+Nieuw beeld of nieuw project  →  projects.js  (zie hieronder)
+
+Iets dat niet met een instelling te regelen valt (bijv. een animatie
+anders laten voelen, een nieuwe interactie, de rand tweemaal
+inverteren, enz.)  →  vraag Claude om app.js aan te passen.
+
+
+NIEUW BEELD TOEVOEGEN
+---------------------
+1. Zet het bestand in de juiste projectmap onder media/
+2. Open projects.js in een teksteditor
+3. Voeg bij dat project één regel toe, bijvoorbeeld:
+     { type: "photo", src: "media/orfeo/orfeo_02.jpg" },
+   of voor video:
+     { type: "video", src: "media/orfeo/orfeo_clip1.mp4" },
+4. Opslaan. Klaar.
+
+
+NIEUW PROJECT TOEVOEGEN
+-----------------------
+1. Maak een nieuwe map onder media/ (bijv. media/nieuw-stuk/)
+2. Kopieer in projects.js een compleet blok { ... }, en pas
+   titel, link, fotograaf en de media-regels aan.
+
+
+AANBEVOLEN FORMATEN
+-------------------
+Foto's:  JPG, ca. 1600–2000 px breed
+Video's: H.264 mp4, zonder audio, 5–15 sec, doel < 3 MB
+         (Media Encoder-preset: H.264, VBR 1-pass, ~2,5 Mbps,
+          960 of 1280 px breed, audio uitvinken)
+
+
+LOKAAL TESTEN
+-------------
+Chrome blokkeert het laden van media als je index.html direct
+vanaf schijf opent (dubbelklik). Twee opties:
+
+- Safari: werkt meestal wél direct vanaf schijf.
+- Zeker weten: start een mini-webserver. Open Terminal, ga
+  naar deze map, en typ:
+      python3 -m http.server
+  Open dan http://localhost:8000 in je browser.
+
+
+PUBLICEREN (GRATIS)
+-------------------
+Makkelijkste optie: Netlify Drop (https://app.netlify.com/drop)
+- Sleep deze hele map naar de pagina → site staat live.
+- Nieuwe versie publiceren = map opnieuw slepen.
+
+Alternatief: GitHub Pages, of de webruimte van je hosting-
+provider (map uploaden via FTP volstaat, er is geen server-side
+code nodig).

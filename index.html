@@ -1,41 +1,48 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="utf-8" />
-        <title>rodrik biersteker</title>
-        <link rel="stylesheet" href="styles.css" />
-        <script src="script.js"></script>
-        
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=Jacquard+12+Charted&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap" rel="stylesheet">
-        
-        
-    </head>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>portfolio — video design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-    <body onload="onPageLoaded()">
-        
-        <div id="mainDiv">
-            
-            
-            
-            
-            
-            
-<a href="mailto:contact@rodrikbiersteker.com" class="email-link">
-  <h2 class="email-header">
-    <span class="email-part">contact</span>
-    <span class="email-part">@</span>
-    <span class="email-part">rodrikbiersteker</span>
-      <span class="email-part">.com</span>
-      
-  </h2>
-</a>
+  <div id="loader">laden…</div>
 
-            </div>
-           
-    </body>
+  <div id="stage"><div id="track"></div></div>
+
+  <div id="frame">
+    <div class="bar bar-top"></div>
+    <div class="bar bar-bottom"></div>
+    <div class="bar bar-left"></div>
+    <div class="bar bar-right"></div>
+  </div>
+
+  <button id="title" type="button" aria-expanded="false" aria-controls="info-panel" aria-label="toon informatie over dit project"></button>
+  <div id="info-panel" role="region" aria-hidden="true">
+    <div id="info-panel-inner">
+      <div id="info-text"></div>
+    </div>
+  </div>
+  <div id="corner"></div>
+  <a id="email" href="mailto:contact@rodrikbiersteker.com" aria-label="stuur een email">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="5.5" width="14" height="9" rx="0.8"/>
+      <path d="M3.3 6.2 10 10.6l6.7-4.4"/>
+    </svg>
+  </a>
+  <button id="pause" aria-pressed="false" aria-label="pauzeer beweging">
+    <svg class="icon-pause" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><rect x="2" y="1" width="3.4" height="12" rx="0.8"/><rect x="8.6" y="1" width="3.4" height="12" rx="0.8"/></svg>
+    <svg class="icon-play" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3.2 1.6 12 7 3.2 12.4z"/></svg>
+  </button>
+
+  <script src="config.js"></script>
+  <script src="projects.js"></script>
+  <script src="app.js"></script>
+
+</body>
 </html>
-    
