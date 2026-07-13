@@ -29,7 +29,7 @@ window.PROJECTS = [
 
   {
     title: "Angela (a strange loop)",
-    info: "",
+    info: "videodesign with Markus Selg - dir: Susanne Kennedy",
     media: [
       { type: "photo", src: "media/angela/angela_01.jpg", photographer: "foto: fotograaf a" },
     ]
@@ -72,7 +72,7 @@ window.PROJECTS = [
 
   {
     title: "Piss Pool",
-    info: "",
+    info: "videodesign - dir: Boogaerdt/VanderSchoot",
     media: [
       { type: "photo", src: "media/pisspool/piss-pool-bvds-Willem-Popelier.png", photographer: "foto: Willem Popelier" },
       { type: "video", src: "media/pisspool/pisspool.mp4", photographer: "" },
