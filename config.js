@@ -28,4 +28,11 @@ window.CONFIG = {
   // Maximumsnelheid, om te voorkomen dat een heel snelle swipe ongecontroleerd doorschiet.
   maximum_snelheid: 2400,
 
+  // Op smalle schermen (mobiel) zijn beelden relatief veel breder dan het
+  // scherm, waardoor dezelfde snelheid trager aanvoelt. Deze factor
+  // verhoogt de snelheid op schermen tot en met "mobiel_breakpoint".
+  // 1 = geen aanpassing.
+  mobiel_snelheidsfactor: 2.5,
+  mobiel_breakpoint: 700,      // schermbreedte (px) waaronder de factor geldt
+
 };

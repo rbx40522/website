@@ -273,11 +273,16 @@
 
 
   // -------- interaction: drag/swipe + scrollwheel with momentum --------
-  const SPEED         = reduceMotion ? 4 : (CONFIG.snelheid ?? 34);
+  // beelden worden op basis van de schermhoogte breed gemaakt, dus op smalle
+  // (mobiele) schermen zijn ze relatief veel breder dan het scherm — vandaar
+  // een snelheidsfactor om dat te compenseren
+  const isMobileWidth  = window.innerWidth <= (CONFIG.mobiel_breakpoint ?? 700);
+  const mobileFactor   = isMobileWidth ? (CONFIG.mobiel_snelheidsfactor ?? 1) : 1;
+  const SPEED         = reduceMotion ? 4 : (CONFIG.snelheid ?? 34) * mobileFactor;
   const REST_VELOCITY = -SPEED;
   const EASE_RATE     = reduceMotion ? 8 : (CONFIG.remkracht ?? 2.2);
   const WHEEL_IMPULSE = CONFIG.wielimpuls ?? 6;
-  const MAX_V         = CONFIG.maximum_snelheid ?? 2400;
+  const MAX_V         = (CONFIG.maximum_snelheid ?? 2400) * mobileFactor;
   const FADE_MS       = CONFIG.fade_duur_ms ?? 160;
   const SNAP_RATE     = 8;   // hoe strak het beeld naar het midden 'springt'
   const TAP_THRESHOLD = 4;   // pixels; onder deze afstand geldt een pointerdown/-up als tap
