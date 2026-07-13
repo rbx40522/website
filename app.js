@@ -31,37 +31,33 @@
   });
 
 
-  // -------- preload aspect ratios --------
+  // -------- aspect ratios: per bestand op te vragen, met cache --------
   const aspectCache = {};
+  const aspectInFlight = {};
 
-  function preloadAll(){
-    const jobs = [];
-    const seen = {};
-    allMedia.forEach(m => {
-      if(seen[m.src]) return;
-      seen[m.src] = true;
+  function getAspect(m){
+    if(aspectCache[m.src] !== undefined) return Promise.resolve(aspectCache[m.src]);
+    if(aspectInFlight[m.src]) return aspectInFlight[m.src];
+    const p = new Promise(res => {
       if(m.type === 'photo'){
         const img = new Image();
-        jobs.push(new Promise(res => {
-          img.onload  = () => { aspectCache[m.src] = img.naturalWidth / img.naturalHeight; res(); };
-          img.onerror = () => { aspectCache[m.src] = 16/9; res(); };
-        }));
+        img.onload  = () => { aspectCache[m.src] = img.naturalWidth / img.naturalHeight; res(aspectCache[m.src]); };
+        img.onerror = () => { aspectCache[m.src] = 16/9; res(aspectCache[m.src]); };
         img.src = m.src;
       } else {
-        jobs.push(new Promise(res => {
-          const probe = document.createElement('video');
-          probe.muted = true;
-          probe.preload = 'metadata';
-          probe.src = m.src;
-          probe.addEventListener('loadedmetadata', () => {
-            aspectCache[m.src] = (probe.videoWidth || 16) / (probe.videoHeight || 9);
-            res();
-          }, { once:true });
-          probe.addEventListener('error', () => { aspectCache[m.src] = 16/9; res(); }, { once:true });
-        }));
+        const probe = document.createElement('video');
+        probe.muted = true;
+        probe.preload = 'metadata';
+        probe.src = m.src;
+        probe.addEventListener('loadedmetadata', () => {
+          aspectCache[m.src] = (probe.videoWidth || 16) / (probe.videoHeight || 9);
+          res(aspectCache[m.src]);
+        }, { once:true });
+        probe.addEventListener('error', () => { aspectCache[m.src] = 16/9; res(aspectCache[m.src]); }, { once:true });
       }
     });
-    return Promise.all(jobs);
+    aspectInFlight[m.src] = p;
+    return p;
   }
 
 
@@ -100,6 +96,44 @@
       seqPtr = 0;
     }
     return sequence[seqPtr++];
+  }
+
+
+  // -------- progressief laden: eerst genoeg om het scherm te vullen, de rest erna --------
+  async function loadInitialBatch(){
+    const stageH = stage.clientHeight || window.innerHeight;
+    const targetWidth = (window.innerWidth || 1200) * 1.5;
+    let covered = 0, i = 0;
+    while(covered < targetWidth && i < sequence.length){
+      const aspect = await getAspect(sequence[i]);
+      covered += stageH * aspect;
+      i++;
+    }
+  }
+
+  function loadRestInBackground(){
+    const seen = {};
+    const todo = [];
+    sequence.forEach(m => {
+      if(seen[m.src] || aspectCache[m.src] !== undefined) return;
+      seen[m.src] = true;
+      todo.push(m);
+    });
+    const CONCURRENCY = 3;
+    let idx = 0, active = 0;
+    function pump(){
+      while(idx < todo.length && active < CONCURRENCY){
+        const m = todo[idx++];
+        active++;
+        getAspect(m).then(aspect => {
+          active--;
+          // item was al als slot getekend met een gok-aspect ratio — nu corrigeren
+          slots.forEach(slot => { if(slot.m.src === m.src) updateSlotAspect(slot, aspect); });
+          pump();
+        });
+      }
+    }
+    pump();
   }
 
 
@@ -175,6 +209,19 @@
   function setX(slot, x){
     slot.x = x;
     slot.el.style.transform = `translate3d(${x}px,0,0)`;
+  }
+
+  function updateSlotAspect(slot, aspect){
+    const stageH = stage.clientHeight || window.innerHeight;
+    const newW = Math.round(stageH * aspect);
+    const delta = newW - slot.w;
+    if(delta === 0) return;
+    slot.w = newW;
+    slot.el.style.width = newW + 'px';
+    const idx = slots.indexOf(slot);
+    for(let i = idx + 1; i < slots.length; i++){
+      setX(slots[i], slots[i].x + delta);
+    }
   }
 
   function appendRight(){
@@ -438,13 +485,14 @@
 
 
   // -------- boot --------
-  preloadAll().then(() => {
+  loadInitialBatch().then(() => {
     ensureFilled();
     const loader = document.getElementById('loader');
     loader.style.opacity = '0';
     setTimeout(() => loader.remove(), 550);
     lastTime = performance.now();
     requestAnimationFrame(frameLoop);
+    loadRestInBackground();
   });
 
 })();

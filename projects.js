@@ -22,14 +22,15 @@
 //  Optioneel:
 //    - "info": tekst die verschijnt als je op de titel klikt.
 //      Laat leeg als er niks te tonen valt.
-//      Nieuwe regel: gebruik \n in de tekst.
+//      Formaat: eerst de rol (bijv. "video design"), dan \n,
+//      dan de overige credits (bijv. "dir: ...").
 // ============================================================
 
 window.PROJECTS = [
 
   {
     title: "Angela (a strange loop)",
-    info: "videodesign with Markus Selg - dir: Susanne Kennedy",
+    info: "video design with Markus Selg\ndir: Susanne Kennedy",
     media: [
       { type: "photo", src: "media/angela/angela_01.jpg", photographer: "foto: fotograaf a" },
     ]
@@ -37,7 +38,7 @@ window.PROJECTS = [
 
   {
     title: "Drei Schwestern",
-    info: "videodesign — dir: Susanne Kennedy",
+    info: "video design\ndir: Susanne Kennedy",
     media: [
       { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg", photographer: "foto: fotograaf b" },
       { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", photographer: "" },
@@ -48,7 +49,7 @@ window.PROJECTS = [
 
   {
     title: "Orfeo",
-    info: "videodesign — dir: Susanne Kennedy, Suzan Boogaerdt, Bianca van der Schoot",
+    info: "video design\ndir: Susanne Kennedy, Suzan Boogaerdt, Bianca van der Schoot",
     media: [
       { type: "photo", src: "media/orfeo/orfeo_01.jpg", photographer: "foto: fotograaf c" },
     ]
@@ -56,7 +57,7 @@ window.PROJECTS = [
 
   {
     title: "Women in Trouble",
-    info: "videodesign — dir: Susanne Kennedy",
+    info: "video design\ndir: Susanne Kennedy",
     media: [
       { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg", photographer: "foto: fotograaf d" },
     ]
@@ -72,10 +73,35 @@ window.PROJECTS = [
 
   {
     title: "Piss Pool",
-    info: "videodesign - dir: Boogaerdt/VanderSchoot",
+    info: "video design\ndir: Boogaerdt/VanderSchoot",
     media: [
       { type: "photo", src: "media/pisspool/piss-pool-bvds-Willem-Popelier.png", photographer: "foto: Willem Popelier" },
       { type: "video", src: "media/pisspool/pisspool.mp4", photographer: "" },
+    ]
+  },
+
+  {
+    title: "Echo's Chamber",
+    info: "video design\ndir: Boogaerdt/VanderSchoot",
+    media: [
+      { type: "photo", src: "media/echos/BVDS-Echos-Chambers-2-webres-scaled.jpg", photographer: "" },
+    ]
+  },
+
+  {
+    title: "Einstein on the Beach",
+    info: "",
+    media: [
+      { type: "photo", src: "media/einstein/Einstein2-scaled-foto Ingo Hoehn.jpg", photographer: "foto: Ingo Hoehn" },
+    ]
+  },
+
+  {
+    title: "SONGOFSONGS",
+    info: "video design\ndir: Boogaerdt/VanderSchoot",
+    media: [
+      { type: "photo", src: "media/Songofsongs/1_SONGOFSONGS_WillemPopelier-webres.jpg", photographer: "foto: Willem Popelier" },
+      { type: "photo", src: "media/Songofsongs/6_SONGOFSONGS_WillemPopelier-webres.jpg", photographer: "foto: Willem Popelier" },
     ]
   },
 
