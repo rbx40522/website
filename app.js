@@ -23,7 +23,7 @@
         project: 'p' + pi,
         title: p.title || '',
         info: p.info || '',
-        photographer: p.photographer || '',
+        photographer: m.photographer || '',
         type: m.type === 'video' ? 'video' : 'photo',
         src: m.src
       });
@@ -370,6 +370,7 @@
   });
 
   let lastProject = null;
+  let lastMediaUid = null;
   let lastTime = performance.now();
 
   function frameLoop(now){
@@ -409,14 +410,19 @@
       // sluit het paneel bij projectwissel — anders staat oude info bij nieuw beeld
       if(panelOpen) setPanelOpen(false);
       titleEl.classList.add('fade');
-      cornerEl.classList.add('fade');
       setTimeout(() => {
         titleEl.textContent  = center.m.title;
-        cornerEl.textContent = center.m.photographer;
         currentInfo = center.m.info || '';
         infoTextEl.textContent = currentInfo;
         updateTitleAffordance();
         titleEl.classList.remove('fade');
+      }, FADE_MS);
+    }
+    if(center && center.m.uid !== lastMediaUid){
+      lastMediaUid = center.m.uid;
+      cornerEl.classList.add('fade');
+      setTimeout(() => {
+        cornerEl.textContent = center.m.photographer;
         cornerEl.classList.remove('fade');
       }, FADE_MS);
     }

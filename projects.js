@@ -11,10 +11,13 @@
 //    2. kopieer een van de blokken hieronder en pas hem aan
 //
 //  Regels:
-//    - foto's:  { type: "photo", src: "media/<map>/<bestand>" }
-//    - video's: { type: "video", src: "media/<map>/<bestand>" }
+//    - foto's:  { type: "photo", src: "media/<map>/<bestand>", photographer: "foto: naam" }
+//    - video's: { type: "video", src: "media/<map>/<bestand>", photographer: "" }
 //    - video's: H.264 mp4, zonder audio, het liefst < 3 MB
 //    - foto's:  JPG, ca. 1600–2000 px breed
+//
+//  "photographer" staat per foto/video (niet per project) — laat leeg
+//  ("") als er geen credit is, bijvoorbeeld bij video's.
 //
 //  Optioneel:
 //    - "info": tekst die verschijnt als je op de titel klikt.
@@ -26,49 +29,53 @@ window.PROJECTS = [
 
   {
     title: "Angela (a strange loop)",
-    photographer: "foto: fotograaf a",
     info: "",
     media: [
-      { type: "photo", src: "media/angela/angela_01.jpg" },
+      { type: "photo", src: "media/angela/angela_01.jpg", photographer: "foto: fotograaf a" },
     ]
   },
 
   {
     title: "Drei Schwestern",
-    photographer: "foto: fotograaf b",
     info: "videodesign — dir: Susanne Kennedy",
     media: [
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg" },
-      { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.jpg" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.jpg" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg", photographer: "foto: fotograaf b" },
+      { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", photographer: "" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.jpg", photographer: "foto: fotograaf b" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.jpg", photographer: "foto: fotograaf b" },
     ]
   },
 
   {
     title: "Orfeo",
-    photographer: "foto: fotograaf c",
     info: "videodesign — dir: Susanne Kennedy, Suzan Boogaerdt, Bianca van der Schoot",
     media: [
-      { type: "photo", src: "media/orfeo/orfeo_01.jpg" },
+      { type: "photo", src: "media/orfeo/orfeo_01.jpg", photographer: "foto: fotograaf c" },
     ]
   },
 
   {
     title: "Women in Trouble",
-    photographer: "foto: fotograaf d",
     info: "videodesign — dir: Susanne Kennedy",
     media: [
-      { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg" },
+      { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg", photographer: "foto: fotograaf d" },
     ]
   },
 
   {
     title: "Virgin Suicides",
-    photographer: "foto: fotograaf e",
     info: "",
     media: [
-      { type: "photo", src: "media/virgin-suicides/virgin-suicides_01.jpg" },
+      { type: "photo", src: "media/virgin-suicides/virgin-suicides_01.jpg", photographer: "foto: fotograaf e" },
+    ]
+  },
+
+  {
+    title: "Piss Pool",
+    info: "",
+    media: [
+      { type: "photo", src: "media/pisspool/piss-pool-bvds-Willem-Popelier.png", photographer: "foto: Willem Popelier" },
+      { type: "video", src: "media/pisspool/pisspool.mp4", photographer: "" },
     ]
   },
 
