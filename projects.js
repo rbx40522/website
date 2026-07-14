@@ -32,7 +32,7 @@ window.PROJECTS = [
     title: "Angela (a strange loop)",
     info: "video design with Markus Selg\ndir: Susanne Kennedy\nKunstenfestivaldesarts Brussels 2023",
     media: [
-      { type: "photo", src: "media/angela/angela_01.jpg", photographer: "" },
+      { type: "photo", src: "media/angela/angela_01.jpg", photographer: "Photo: Julian Röder" },
     ]
   },
 
@@ -40,10 +40,10 @@ window.PROJECTS = [
     title: "Drei Schwestern",
     info: "video design\ndir: Susanne Kennedy\nMünchner Kammerspiele 2019",
     media: [
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg", photographer: "" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg", photographer: "Photo: Judith Buss" },
       { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", photographer: "" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.jpg", photographer: "" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.jpg", photographer: "" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.jpg", photographer: "Photo: Judith Buss" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.jpg", photographer: "Photo: Judith Buss" },
     ]
   },
 
@@ -51,7 +51,7 @@ window.PROJECTS = [
     title: "Orfeo",
     info: "video design\ndir: Susanne Kennedy, Suzan Boogaerdt, Bianca van der Schoot\nRuhrtriennale 2015",
     media: [
-      { type: "photo", src: "media/orfeo/orfeo_01.jpg", photographer: "" },
+      { type: "photo", src: "media/orfeo/orfeo_01.jpg", photographer: "Photo: Julian Röder" },
     ]
   },
 
@@ -59,7 +59,7 @@ window.PROJECTS = [
     title: "Women in Trouble",
     info: "video design\ndir: Susanne Kennedy\nVolksbühne Berlin 2017",
     media: [
-      { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg", photographer: "" },
+      { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg", photographer: "Photo: Julian Röder" },
     ]
   },
 
@@ -67,7 +67,7 @@ window.PROJECTS = [
     title: "Virgin Suicides",
     info: "video design\ndir: Susanne Kennedy\nMünchner Kammerspiele 2017",
     media: [
-      { type: "photo", src: "media/virgin-suicides/virgin-suicides_01.jpg", photographer: "" },
+      { type: "photo", src: "media/virgin-suicides/virgin-suicides_01.jpg", photographer: "Photo: Ursula Kaufmann" },
     ]
   },
 
@@ -84,7 +84,7 @@ window.PROJECTS = [
     title: "Echo's Chamber",
     info: "video design\ndir: Boogaerdt/VanderSchoot\nTheater der Welt Frankfurt - Offenbach 2023",
     media: [
-      { type: "photo", src: "media/echos/BVDS-Echos-Chambers-2-webres-scaled.jpg", photographer: "" },
+      { type: "photo", src: "media/echos/BVDS-Echos-Chambers-2-webres-scaled.jpg", photographer: "Photo: Willem Popelier" },
     ]
   },
 
@@ -109,8 +109,8 @@ window.PROJECTS = [
     title: "Ultraworld",
     info: "video design with Markus Selg\ndir: Susanne Kennedy\nVolksbühne Berlin 2020",
     media: [
-      { type: "photo", src: "media/ultraworld/ultraworld.jpg", photographer: "" },
-      { type: "photo", src: "media/ultraworld/maxresdefault.jpg", photographer: "" },
+      { type: "photo", src: "media/ultraworld/ultraworld.jpg", photographer: "Photo: Julian Röder" },
+      { type: "photo", src: "media/ultraworld/maxresdefault.jpg", photographer: "Photo: Julian Röder" },
     ]
   },
 
