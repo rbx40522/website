@@ -17,10 +17,10 @@
   --rand-dikte:          clamp(14px, 2.4vw, 34px);
 
   /* -- typografie -- */
-  --titel-font:          'Oswald', sans-serif;
+  --titel-font:          'Space Grotesk', sans-serif;
   --titel-grootte:       clamp(11px, 1.15vw, 16px);
   --titel-letterspacing: 0.22em;
-  --credit-font:         'Inter', sans-serif;
+  --credit-font:         'Manrope', sans-serif;
   --credit-grootte:      10px;
   --credit-letterspacing: 0.14em;
 

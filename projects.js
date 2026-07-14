@@ -11,7 +11,7 @@
 //    2. kopieer een van de blokken hieronder en pas hem aan
 //
 //  Regels:
-//    - foto's:  { type: "photo", src: "media/<map>/<bestand>", photographer: "foto: naam" }
+//    - foto's:  { type: "photo", src: "media/<map>/<bestand>", photographer: "Photo: naam" }
 //    - video's: { type: "video", src: "media/<map>/<bestand>", photographer: "" }
 //    - video's: H.264 mp4, zonder audio, het liefst < 3 MB
 //    - foto's:  JPG, ca. 1600–2000 px breed
@@ -32,7 +32,7 @@ window.PROJECTS = [
     title: "Angela (a strange loop)",
     info: "video design with Markus Selg\ndir: Susanne Kennedy\nKunstenfestivaldesarts Brussels 2023",
     media: [
-      { type: "photo", src: "media/angela/angela_01.jpg", photographer: "foto: fotograaf a" },
+      { type: "photo", src: "media/angela/angela_01.jpg", photographer: "" },
     ]
   },
 
@@ -40,10 +40,10 @@ window.PROJECTS = [
     title: "Drei Schwestern",
     info: "video design\ndir: Susanne Kennedy\nMünchner Kammerspiele 2019",
     media: [
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg", photographer: "foto: fotograaf b" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.jpg", photographer: "" },
       { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", photographer: "" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.jpg", photographer: "foto: fotograaf b" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.jpg", photographer: "foto: fotograaf b" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.jpg", photographer: "" },
+      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.jpg", photographer: "" },
     ]
   },
 
@@ -51,7 +51,7 @@ window.PROJECTS = [
     title: "Orfeo",
     info: "video design\ndir: Susanne Kennedy, Suzan Boogaerdt, Bianca van der Schoot\nRuhrtriennale 2015",
     media: [
-      { type: "photo", src: "media/orfeo/orfeo_01.jpg", photographer: "foto: fotograaf c" },
+      { type: "photo", src: "media/orfeo/orfeo_01.jpg", photographer: "" },
     ]
   },
 
@@ -59,7 +59,7 @@ window.PROJECTS = [
     title: "Women in Trouble",
     info: "video design\ndir: Susanne Kennedy\nVolksbühne Berlin 2017",
     media: [
-      { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg", photographer: "foto: fotograaf d" },
+      { type: "photo", src: "media/women-in-trouble/women-in-trouble_01.jpg", photographer: "" },
     ]
   },
 
@@ -67,7 +67,7 @@ window.PROJECTS = [
     title: "Virgin Suicides",
     info: "video design\ndir: Susanne Kennedy\nMünchner Kammerspiele 2017",
     media: [
-      { type: "photo", src: "media/virgin-suicides/virgin-suicides_01.jpg", photographer: "foto: fotograaf e" },
+      { type: "photo", src: "media/virgin-suicides/virgin-suicides_01.jpg", photographer: "" },
     ]
   },
 
@@ -75,7 +75,7 @@ window.PROJECTS = [
     title: "Piss Pool",
     info: "video design\ndir: Boogaerdt/VanderSchoot\nFrascati Amsterdam 2025",
     media: [
-      { type: "photo", src: "media/pisspool/piss-pool-bvds-Willem-Popelier.png", photographer: "foto: Willem Popelier" },
+      { type: "photo", src: "media/pisspool/piss-pool-bvds-Willem-Popelier.png", photographer: "Photo: Willem Popelier" },
       { type: "video", src: "media/pisspool/pisspool.mp4", photographer: "" },
     ]
   },
@@ -92,7 +92,7 @@ window.PROJECTS = [
     title: "Einstein on the Beach",
     info: "video design with Markus Selg\ndir: Susanne Kennedy\nTheater Basel 2022",
     media: [
-      { type: "photo", src: "media/einstein/Einstein2-scaled-foto Ingo Hoehn.jpg", photographer: "foto: Ingo Hoehn" },
+      { type: "photo", src: "media/einstein/Einstein2-scaled-foto Ingo Hoehn.jpg", photographer: "Photo: Ingo Hoehn" },
     ]
   },
 
@@ -100,8 +100,8 @@ window.PROJECTS = [
     title: "SONGOFSONGS",
     info: "video design\ndir: Boogaerdt/VanderSchoot\nTheater Rotterdam 2024",
     media: [
-      { type: "photo", src: "media/Songofsongs/1_SONGOFSONGS_WillemPopelier-webres.jpg", photographer: "foto: Willem Popelier" },
-      { type: "photo", src: "media/Songofsongs/6_SONGOFSONGS_WillemPopelier-webres.jpg", photographer: "foto: Willem Popelier" },
+      { type: "photo", src: "media/Songofsongs/1_SONGOFSONGS_WillemPopelier-webres.jpg", photographer: "Photo: Willem Popelier" },
+      { type: "photo", src: "media/Songofsongs/6_SONGOFSONGS_WillemPopelier-webres.jpg", photographer: "Photo: Willem Popelier" },
     ]
   },
 
@@ -118,7 +118,7 @@ window.PROJECTS = [
     title: "Oracle",
     info: "video design\ndir: Susanne Kennedy\nMünchner Kammerspiele 2020",
     media: [
-      { type: "photo", src: "media/oracle/Oracle_MK_Pressebild_JudithBuss_MG1_7544.jpg", photographer: "foto: Judith Buss" },
+      { type: "photo", src: "media/oracle/Oracle_MK_Pressebild_JudithBuss_MG1_7544.jpg", photographer: "Photo: Judith Buss" },
     ]
   },
 
