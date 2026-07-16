@@ -340,6 +340,19 @@
     velocity = Math.max(-MAX_V*1.25, Math.min(MAX_V*1.25, velocity));
   }, { passive:true });
 
+  // spatiebalk pauzeert en hervat de band. Tikken op een beeld doet hetzelfde,
+  // maar dat kan alleen met muis of vinger — dit is het aanknopingspunt voor
+  // wie met het toetsenbord werkt.
+  document.addEventListener('keydown', (e) => {
+    if(e.code !== 'Space' && e.key !== ' ') return;
+    // staat de focus op de titel of het e-mailadres, dan bedient spatie díé
+    const t = e.target;
+    if(t && (t.tagName === 'BUTTON' || t.tagName === 'A')) return;
+    e.preventDefault();
+    snapRemaining = 0;
+    paused = !paused;
+  });
+
 
   // -------- main loop --------
   const titleEl     = document.getElementById('title');
