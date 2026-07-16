@@ -12,6 +12,9 @@
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  const track = document.getElementById('track');
+  const stage = document.getElementById('stage');
+
 
   // -------- flatten projects into a single media list --------
   let mediaId = 0;
@@ -25,39 +28,37 @@
         info: p.info || '',
         photographer: m.photographer || '',
         type: m.type === 'video' ? 'video' : 'photo',
+        // ontbreekt de ratio in projects.js, dan gokken we 16:9 — het beeld
+        // wordt dan bijgesneden, maar de band blijft heel
+        ratio: (typeof m.ratio === 'number' && m.ratio > 0) ? m.ratio : 16/9,
         src: m.src
       });
     });
   });
 
 
-  // -------- aspect ratios: per bestand op te vragen, met cache --------
-  const aspectCache = {};
-  const aspectInFlight = {};
+  // -------- afmetingen: één keer meten, daarna hergebruiken --------
+  // clientWidth/clientHeight uitlezen dwingt de browser tot rekenwerk, dus dat
+  // doen we niet per frame maar alleen als het scherm echt verandert
+  let stageW = 0, stageH = 0, overlap = 0;
+  let SPEED = 0, REST_VELOCITY = 0, MAX_V = 0;
 
-  function getAspect(m){
-    if(aspectCache[m.src] !== undefined) return Promise.resolve(aspectCache[m.src]);
-    if(aspectInFlight[m.src]) return aspectInFlight[m.src];
-    const p = new Promise(res => {
-      if(m.type === 'photo'){
-        const img = new Image();
-        img.onload  = () => { aspectCache[m.src] = img.naturalWidth / img.naturalHeight; res(aspectCache[m.src]); };
-        img.onerror = () => { aspectCache[m.src] = 16/9; res(aspectCache[m.src]); };
-        img.src = m.src;
-      } else {
-        const probe = document.createElement('video');
-        probe.muted = true;
-        probe.preload = 'metadata';
-        probe.src = m.src;
-        probe.addEventListener('loadedmetadata', () => {
-          aspectCache[m.src] = (probe.videoWidth || 16) / (probe.videoHeight || 9);
-          res(aspectCache[m.src]);
-        }, { once:true });
-        probe.addEventListener('error', () => { aspectCache[m.src] = 16/9; res(aspectCache[m.src]); }, { once:true });
-      }
-    });
-    aspectInFlight[m.src] = p;
-    return p;
+  function measure(){
+    stageW = stage.clientWidth  || window.innerWidth;
+    stageH = stage.clientHeight || window.innerHeight;
+    overlap = Math.max(
+      CONFIG.overlap_minimum || 50,
+      stageW * (CONFIG.overlap_percentage_scherm || 0.06)
+    );
+    // beelden worden op basis van de schermhoogte breed gemaakt, dus op smalle
+    // (mobiele) schermen zijn ze relatief veel breder dan het scherm — vandaar
+    // een snelheidsfactor om dat te compenseren
+    const mobileFactor = stageW <= (CONFIG.mobiel_breakpoint ?? 700)
+      ? (CONFIG.mobiel_snelheidsfactor ?? 1)
+      : 1;
+    SPEED         = reduceMotion ? 4 : (CONFIG.snelheid ?? 34) * mobileFactor;
+    REST_VELOCITY = -SPEED;
+    MAX_V         = (CONFIG.maximum_snelheid ?? 2400) * mobileFactor;
   }
 
 
@@ -99,53 +100,11 @@
   }
 
 
-  // -------- progressief laden: eerst genoeg om het scherm te vullen, de rest erna --------
-  async function loadInitialBatch(){
-    const stageH = stage.clientHeight || window.innerHeight;
-    const targetWidth = (window.innerWidth || 1200) * 1.5;
-    let covered = 0, i = 0;
-    while(covered < targetWidth && i < sequence.length){
-      const aspect = await getAspect(sequence[i]);
-      covered += stageH * aspect;
-      i++;
-    }
-  }
-
-  function loadRestInBackground(){
-    const seen = {};
-    const todo = [];
-    sequence.forEach(m => {
-      if(seen[m.src] || aspectCache[m.src] !== undefined) return;
-      seen[m.src] = true;
-      todo.push(m);
-    });
-    const CONCURRENCY = 3;
-    let idx = 0, active = 0;
-    function pump(){
-      while(idx < todo.length && active < CONCURRENCY){
-        const m = todo[idx++];
-        active++;
-        getAspect(m).then(aspect => {
-          active--;
-          // item was al als slot getekend met een gok-aspect ratio — nu corrigeren
-          slots.forEach(slot => { if(slot.m.src === m.src) updateSlotAspect(slot, aspect); });
-          pump();
-        });
-      }
-    }
-    pump();
-  }
-
-
   // -------- item creation --------
-  const track = document.getElementById('track');
-  const stage = document.getElementById('stage');
   const allVideos = [];
 
   function createSlot(m, orderIdx){
-    const aspect = aspectCache[m.src] || 16/9;
-    const stageH = stage.clientHeight || window.innerHeight;
-    const w = Math.round(stageH * aspect);
+    const w = Math.round(stageH * m.ratio);
 
     const el = document.createElement('div');
     el.className = 'item';
@@ -201,27 +160,10 @@
   // -------- conveyor bookkeeping --------
   const slots = [];
   const fullOrder = [];
-  const OVERLAP = () => Math.max(
-    CONFIG.overlap_minimum || 50,
-    window.innerWidth * (CONFIG.overlap_percentage_scherm || 0.06)
-  );
 
   function setX(slot, x){
     slot.x = x;
     slot.el.style.transform = `translate3d(${x}px,0,0)`;
-  }
-
-  function updateSlotAspect(slot, aspect){
-    const stageH = stage.clientHeight || window.innerHeight;
-    const newW = Math.round(stageH * aspect);
-    const delta = newW - slot.w;
-    if(delta === 0) return;
-    slot.w = newW;
-    slot.el.style.width = newW + 'px';
-    const idx = slots.indexOf(slot);
-    for(let i = idx + 1; i < slots.length; i++){
-      setX(slots[i], slots[i].x + delta);
-    }
   }
 
   function appendRight(){
@@ -231,8 +173,8 @@
     const slot = createSlot(m, idx);
     const prev = slots.length ? slots[slots.length-1] : null;
     const x = prev
-      ? (prev.x + prev.w - OVERLAP())
-      : -Math.max(360, window.innerWidth*0.5);
+      ? (prev.x + prev.w - overlap)
+      : -Math.max(360, stageW*0.5);
     track.appendChild(slot.el);
     setX(slot, x);
     slots.push(slot);
@@ -240,13 +182,11 @@
 
   function prependLeft(){
     if(!slots.length) return false;
-    const firstIdx = slots[0].orderIdx;
-    const idx = firstIdx - 1;
+    const idx = slots[0].orderIdx - 1;
     if(idx < 0) return false;
-    const m = fullOrder[idx];
-    const slot = createSlot(m, idx);
+    const slot = createSlot(fullOrder[idx], idx);
     track.insertBefore(slot.el, track.firstChild);
-    setX(slot, slots[0].x - slot.w + OVERLAP());
+    setX(slot, slots[0].x - slot.w + overlap);
     slots.unshift(slot);
     return true;
   }
@@ -254,7 +194,7 @@
   function ensureFilled(){
     let guard = 0;
     while(
-      (slots.length === 0 || (slots[slots.length-1].x + slots[slots.length-1].w) < window.innerWidth + 200)
+      (slots.length === 0 || (slots[slots.length-1].x + slots[slots.length-1].w) < stageW + 200)
       && guard++ < 40
     ){
       appendRight();
@@ -263,32 +203,61 @@
     while(slots.length && slots[0].x > -200 && guard++ < 40){
       if(!prependLeft()) break;
     }
-    while(slots.length > 2 && slots[0].x + slots[0].w < -window.innerWidth*1.5){
+    while(slots.length > 2 && slots[0].x + slots[0].w < -stageW*1.5){
       destroySlot(slots.shift());
     }
-    while(slots.length > 2 && slots[slots.length-1].x > window.innerWidth*2.5){
+    while(slots.length > 2 && slots[slots.length-1].x > stageW*2.5){
       destroySlot(slots.pop());
     }
   }
 
 
+  // -------- schermformaat verandert (draaien, venster slepen) --------
+  // breedtes hangen aan de schermhoogte, dus die moeten allemaal opnieuw;
+  // we ankeren op het beeld in het midden zodat de band niet lijkt te springen
+  function relayout(){
+    const prevW = stageW;
+    measure();
+    if(!slots.length) return;
+
+    const centerX = stageW/2;
+    let anchorIdx = slots.findIndex(s => s.x <= (prevW/2) && (prevW/2) < s.x + s.w);
+    if(anchorIdx < 0) anchorIdx = 0;
+    const anchor = slots[anchorIdx];
+    // welk punt van het ankerbeeld stond er in het midden? dat houden we vast
+    const frac = (prevW/2 - anchor.x) / anchor.w;
+
+    for(const s of slots){
+      s.w = Math.round(stageH * s.m.ratio);
+      s.el.style.width = s.w + 'px';
+    }
+
+    setX(anchor, centerX - frac * anchor.w);
+    for(let i = anchorIdx-1; i >= 0; i--) setX(slots[i], slots[i+1].x - slots[i].w + overlap);
+    for(let i = anchorIdx+1; i < slots.length; i++) setX(slots[i], slots[i-1].x + slots[i-1].w - overlap);
+
+    ensureFilled();
+  }
+
+  let relayoutQueued = false;
+  function queueRelayout(){
+    if(relayoutQueued) return;
+    relayoutQueued = true;
+    requestAnimationFrame(() => { relayoutQueued = false; relayout(); });
+  }
+  window.addEventListener('resize', queueRelayout);
+  window.addEventListener('orientationchange', queueRelayout);
+
+
   // -------- interaction: drag/swipe + scrollwheel with momentum --------
-  // beelden worden op basis van de schermhoogte breed gemaakt, dus op smalle
-  // (mobiele) schermen zijn ze relatief veel breder dan het scherm — vandaar
-  // een snelheidsfactor om dat te compenseren
-  const isMobileWidth  = window.innerWidth <= (CONFIG.mobiel_breakpoint ?? 700);
-  const mobileFactor   = isMobileWidth ? (CONFIG.mobiel_snelheidsfactor ?? 1) : 1;
-  const SPEED         = reduceMotion ? 4 : (CONFIG.snelheid ?? 34) * mobileFactor;
-  const REST_VELOCITY = -SPEED;
   const EASE_RATE     = reduceMotion ? 8 : (CONFIG.remkracht ?? 2.2);
   const WHEEL_IMPULSE = CONFIG.wielimpuls ?? 6;
-  const MAX_V         = (CONFIG.maximum_snelheid ?? 2400) * mobileFactor;
   const FADE_MS       = CONFIG.fade_duur_ms ?? 160;
   const SNAP_RATE     = 8;   // hoe strak het beeld naar het midden 'springt'
   const TAP_THRESHOLD = 4;   // pixels; onder deze afstand geldt een pointerdown/-up als tap
 
   let dragging = false, dragLastX = 0, dragStartX = 0, dragMoved = false;
-  let velocity = REST_VELOCITY;
+  let velocity = 0;
   let dragSamples = [];
   let snapRemaining = 0; // px die nog naar het midden geanimeerd moeten worden
   let paused = false;
@@ -303,9 +272,7 @@
   }
 
   function snapSlotToCenter(slot){
-    const centerX = stage.clientWidth/2;
-    const slotCenter = slot.x + slot.w/2;
-    snapRemaining = centerX - slotCenter;   // positief = slot moet naar rechts
+    snapRemaining = stageW/2 - (slot.x + slot.w/2);   // positief = slot moet naar rechts
     velocity = 0;
     if(!paused) setPaused(true);
   }
@@ -436,9 +403,7 @@
         for(const s of slots) setX(s, s.x + step);
         snapRemaining -= step;
         if(Math.abs(snapRemaining) < 0.5){
-          if(snapRemaining !== 0){
-            for(const s of slots) setX(s, s.x + snapRemaining);
-          }
+          for(const s of slots) setX(s, s.x + snapRemaining);
           snapRemaining = 0;
         }
         velocity = 0;
@@ -455,7 +420,7 @@
     }
     ensureFilled();
 
-    const centerX = stage.clientWidth/2;
+    const centerX = stageW/2;
     const center = slots.find(s => s.x <= centerX && centerX < s.x + s.w);
     if(center && center.m.project !== lastProject){
       lastProject = center.m.project;
@@ -463,6 +428,8 @@
       if(panelOpen) setPanelOpen(false);
       titleEl.classList.add('fade');
       setTimeout(() => {
+        // bij snel swipen staan er meerdere fades klaar; alleen de laatste telt
+        if(lastProject !== center.m.project) return;
         titleEl.textContent  = center.m.title;
         currentInfo = center.m.info || '';
         infoTextEl.textContent = currentInfo;
@@ -474,6 +441,7 @@
       lastMediaUid = center.m.uid;
       cornerEl.classList.add('fade');
       setTimeout(() => {
+        if(lastMediaUid !== center.m.uid) return;
         cornerEl.textContent = center.m.photographer;
         cornerEl.classList.remove('fade');
       }, FADE_MS);
@@ -490,14 +458,45 @@
 
 
   // -------- boot --------
-  loadInitialBatch().then(() => {
-    ensureFilled();
+  // de loader blijft staan tot de beelden die meteen in beeld staan geladen
+  // zijn — maar nooit langer dan LOADER_TIMEOUT, anders houdt één traag
+  // bestand de hele site gegijzeld
+  const LOADER_TIMEOUT = 4000;
+
+  function slotReady(slot){
+    const v = slot.videoEl;
+    if(v){
+      if(v.readyState >= 2) return Promise.resolve();
+      return new Promise(res => {
+        v.addEventListener('loadeddata', res, { once:true });
+        v.addEventListener('error',      res, { once:true });
+      });
+    }
+    const img = slot.el.querySelector('img');
+    if(!img || img.complete) return Promise.resolve();
+    return new Promise(res => {
+      img.addEventListener('load',  res, { once:true });
+      img.addEventListener('error', res, { once:true });
+    });
+  }
+
+  function hideLoader(){
     const loader = document.getElementById('loader');
+    if(!loader) return;
     loader.style.opacity = '0';
     setTimeout(() => loader.remove(), 550);
-    lastTime = performance.now();
-    requestAnimationFrame(frameLoop);
-    loadRestInBackground();
-  });
+  }
+
+  measure();
+  ensureFilled();
+  velocity = REST_VELOCITY;
+  lastTime = performance.now();
+  requestAnimationFrame(frameLoop);
+
+  const onScreen = slots.filter(s => s.x < stageW && s.x + s.w > 0);
+  Promise.race([
+    Promise.all(onScreen.map(slotReady)),
+    new Promise(res => setTimeout(res, LOADER_TIMEOUT))
+  ]).then(hideLoader);
 
 })();

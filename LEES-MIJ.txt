@@ -35,12 +35,21 @@ inverteren, enz.)  →  vraag Claude om app.js aan te passen.
 NIEUW BEELD TOEVOEGEN
 ---------------------
 1. Zet het bestand in de juiste projectmap onder media/
-2. Open projects.js in een teksteditor
-3. Voeg bij dat project één regel toe, bijvoorbeeld:
-     { type: "photo", src: "media/orfeo/orfeo_02.jpg" },
+2. Zoek de afmetingen op: klik het bestand aan in de Finder en
+   druk cmd-I. Deel de breedte door de hoogte — dat is de "ratio".
+   Voorbeeld: 2000 x 1191  ->  2000 / 1191 = 1.679
+3. Open projects.js in een teksteditor
+4. Voeg bij dat project één regel toe, bijvoorbeeld:
+     { type: "photo", src: "media/orfeo/orfeo_02.webp", ratio: 1.679, photographer: "Photo: naam" },
    of voor video:
-     { type: "video", src: "media/orfeo/orfeo_clip1.mp4" },
-4. Opslaan. Klaar.
+     { type: "video", src: "media/orfeo/orfeo_clip1.mp4", ratio: 1.778, photographer: "" },
+5. Opslaan. Klaar.
+
+De "ratio" moet erbij. De site gebruikt dat getal om alvast de
+juiste plek voor het beeld vrij te maken zonder het bestand te
+downloaden — zo laadt de pagina snel en laadt hij alleen de
+beelden die je echt te zien krijgt. Klopt het getal niet, dan
+wordt het beeld bijgesneden of blijft er een streep over.
 
 
 NIEUW PROJECT TOEVOEGEN
@@ -52,7 +61,18 @@ NIEUW PROJECT TOEVOEGEN
 
 AANBEVOLEN FORMATEN
 -------------------
-Foto's:  JPG, ca. 1600–2000 px breed
+Foto's:  WebP, ca. 1600 px HOOG (de breedte volgt vanzelf).
+         Beelden worden op schermhoogte geschaald, dus de hoogte
+         bepaalt de scherpte — de breedte doet er niet toe.
+
+         Een JPG of PNG omzetten naar WebP, via Terminal in deze map:
+             cwebp -q 80 -m 6 -sharp_yuv foto.jpg -o foto.webp
+         Is het beeld hoger dan 1600 px, verklein het dan meteen
+         (vervang 2399 door breedte * 1600 / hoogte):
+             cwebp -q 80 -m 6 -sharp_yuv -resize 2399 1600 foto.jpg -o foto.webp
+
+         Heb je cwebp nog niet:  brew install webp
+
 Video's: H.264 mp4, zonder audio, 5–15 sec, doel < 3 MB
          (Media Encoder-preset: H.264, VBR 1-pass, ~2,5 Mbps,
           960 of 1280 px breed, audio uitvinken)
