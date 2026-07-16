@@ -10,7 +10,7 @@
   --item-achtergrond:    #0a0a0a;   /* kleur onder het beeld tijdens laden */
   --titel-kleur:         #ffffff;
   --credit-kleur:        #ffffff;
-  --knop-kleur:          #ffffff;
+  --email-kleur:         #ffffff;
   --loader-kleur:        #888888;
 
   /* -- rand (de omlijsting die inverteert) -- */
@@ -27,12 +27,12 @@
   /* -- de fade wanneer titel/credit van project wisselen -- */
   --fade-duur:           .28s;
 
-  /* -- pauze-knop -- */
-  --knop-grootte:        40px;
-  --knop-icoon-grootte:  14px;
-  --knop-marge-rechts:   14px;
-  --knop-marge-onder:    12px;
-  --knop-opacity:        .55;
+  /* -- e-mailadres rechtsonder -- */
+  --email-grootte:       10px;
+  --email-letterspacing: 0.14em;
+  --email-marge-rechts:  14px;
+  --email-marge-onder:   12px;
+  --email-opacity:       .55;
 }
 
 /* op mobiel iets ruimere rand zodat de titel leesbaar blijft */
@@ -243,73 +243,35 @@ html, body {
 
 
 /* =============================================================
-   EMAIL-KNOP rechtsonder, boven de pauze-knop
+   E-MAILADRES rechtsonder — uitgeschreven, spiegelt de
+   fotograaf-credit linksonder
    ============================================================= */
 
 #email {
   position: fixed;
-  right: calc(var(--rand-dikte) + var(--knop-marge-rechts));
-  /* zit direct boven de pauze-knop: onder-marge + pauzeknop-hoogte + tussenruimte */
-  bottom: calc(var(--rand-dikte) + var(--knop-marge-onder) + var(--knop-grootte) + 10px);
+  right: calc(var(--rand-dikte) + var(--email-marge-rechts));
+  bottom: calc(var(--rand-dikte) + var(--email-marge-onder));
   z-index: 7;
-  width: var(--knop-grootte);
-  height: var(--knop-grootte);
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,.35);
-  border-radius: 50%;
-  color: var(--knop-kleur);
+  font-family: var(--credit-font);
+  font-size: var(--email-grootte);
+  letter-spacing: var(--email-letterspacing);
+  color: var(--email-kleur);
   text-decoration: none;
-  opacity: var(--knop-opacity);
+  text-shadow: 0 1px 5px rgba(0,0,0,.45);
+  white-space: nowrap;
+  opacity: var(--email-opacity);
+  transition: opacity var(--fade-duur) ease;
 }
 #email:hover,
-#email:focus-visible { opacity: 1; }
+#email:focus-visible {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 #email:focus-visible {
   outline: 2px solid #fff;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
-#email svg {
-  width: var(--knop-icoon-grootte);
-  height: var(--knop-icoon-grootte);
-  display: block;
-}
-
-
-/* =============================================================
-   PAUZE-KNOP rechtsonder
-   ============================================================= */
-
-#pause {
-  position: fixed;
-  right: calc(var(--rand-dikte) + var(--knop-marge-rechts));
-  bottom: calc(var(--rand-dikte) + var(--knop-marge-onder));
-  z-index: 7;
-  width: var(--knop-grootte);
-  height: var(--knop-grootte);
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: 1px solid rgba(255,255,255,.35);
-  border-radius: 50%;
-  color: var(--knop-kleur);
-  cursor: pointer;
-  opacity: var(--knop-opacity);
-}
-#pause:hover,
-#pause:focus-visible { opacity: 1; }
-#pause:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
-#pause svg {
-  width: var(--knop-icoon-grootte);
-  height: var(--knop-icoon-grootte);
-  display: block;
-}
-#pause .icon-play  { display: none; }
-#pause.paused .icon-pause { display: none; }
-#pause.paused .icon-play  { display: block; }
 
 
 /* =============================================================

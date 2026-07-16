@@ -260,21 +260,14 @@
   let velocity = 0;
   let dragSamples = [];
   let snapRemaining = 0; // px die nog naar het midden geanimeerd moeten worden
+  // pauze zet alleen de horizontale drift stil; videos blijven altijd afspelen.
+  // Je pauzeert door op een beeld te tikken, en hervat met een tik, swipe of scroll.
   let paused = false;
-  const pauseBtn = document.getElementById('pause');
-
-  function setPaused(next){
-    paused = !!next;
-    pauseBtn.classList.toggle('paused', paused);
-    pauseBtn.setAttribute('aria-pressed', String(paused));
-    pauseBtn.setAttribute('aria-label', paused ? 'hervat beweging' : 'pauzeer beweging');
-    // NB: videos blijven altijd afspelen — 'pauze' geldt alleen voor de horizontale drift
-  }
 
   function snapSlotToCenter(slot){
     snapRemaining = stageW/2 - (slot.x + slot.w/2);   // positief = slot moet naar rechts
     velocity = 0;
-    if(!paused) setPaused(true);
+    paused = true;
   }
 
   function findSlotAt(clientX){
@@ -301,7 +294,7 @@
     if(dragMoved){
       if(snapRemaining !== 0) snapRemaining = 0;
       // swiping while paused resumes normal drift
-      if(paused) setPaused(false);
+      paused = false;
     }
     for(const s of slots) setX(s, s.x + dx);
     const now = performance.now();
@@ -326,7 +319,7 @@
       // tap: als de show al gepauzeerd is, hervatten we hem (net als bij swipe/scroll).
       // Anders: het aangetikte beeld naar het midden animeren en pauzeren.
       if(paused){
-        setPaused(false);
+        paused = false;
       } else {
         const tapped = findSlotAt(dragStartX);
         if(tapped) snapSlotToCenter(tapped);
@@ -342,7 +335,7 @@
     // wheel input cancels a snap and takes over the motion
     if(snapRemaining !== 0) snapRemaining = 0;
     // scrolling while paused resumes normal drift
-    if(paused) setPaused(false);
+    paused = false;
     velocity += -delta * WHEEL_IMPULSE;
     velocity = Math.max(-MAX_V*1.25, Math.min(MAX_V*1.25, velocity));
   }, { passive:true });
@@ -449,13 +442,6 @@
 
     requestAnimationFrame(frameLoop);
   }
-
-  pauseBtn.addEventListener('click', () => {
-    // clicking the pause button also cancels any in-progress snap
-    snapRemaining = 0;
-    setPaused(!paused);
-  });
-
 
   // -------- boot --------
   // de loader blijft staan tot de beelden die meteen in beeld staan geladen
