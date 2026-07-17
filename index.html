@@ -43,25 +43,60 @@
       + 'background:#000;color:#0f0;font:12px/1.5 monospace;padding:12px 16px;border:1px solid #0f0;'
       + 'white-space:pre;text-align:left;pointer-events:none';
     document.body.appendChild(box);
-    const toon = () => {
+    // Wat de configuratie zegt dat er zou moeten gebeuren.
+    let regelsConfig = '';
+    const berekenConfig = () => {
       const stage = document.getElementById('stage');
       const w = stage.clientWidth  || innerWidth;
       const h = stage.clientHeight || innerHeight;
       const factor = w <= (CONFIG.mobiel_breakpoint ?? 700) ? (CONFIG.mobiel_snelheidsfactor ?? 1) : 1;
       const speed = (CONFIG.snelheid ?? 34) * factor;
-      const beeldbreedte = h * 16/9;
-      box.textContent =
+      regelsConfig =
         'venster      ' + innerWidth + ' x ' + innerHeight + '\n' +
         'stage        ' + w + ' x ' + h + '\n' +
         'dpr          ' + devicePixelRatio + '\n' +
         'mobielfactor ' + factor + '\n' +
-        'snelheid     ' + speed.toFixed(0) + ' px/s\n' +
-        'beeld 16:9   ' + beeldbreedte.toFixed(0) + ' px breed\n' +
-        'tempo        ' + (speed / beeldbreedte).toFixed(3) + ' beelden/s';
+        'verwacht     ' + speed.toFixed(0) + ' px/s\n';
     };
-    toon();
-    addEventListener('resize', toon);
-    addEventListener('orientationchange', () => setTimeout(toon, 300));
+
+    // Wat er werkelijk beweegt: we volgen één beeld en meten hoeveel pixels
+    // het per seconde opschuift. Recycling van beelden geeft grote sprongen;
+    // die gooien we weg.
+    let vorigeX = null, somPx = 0, somTijd = 0, frames = 0, vorigeTijd = performance.now();
+    let echtePx = 0, fps = 0, breedte = 0;
+
+    const meet = (nu) => {
+      const item = document.querySelector('#track .item');
+      const dt = (nu - vorigeTijd) / 1000;
+      vorigeTijd = nu;
+      frames++;
+      if(item){
+        breedte = item.getBoundingClientRect().width;
+        const x = item.getBoundingClientRect().x;
+        if(vorigeX !== null && dt > 0){
+          const delta = x - vorigeX;
+          if(Math.abs(delta) < 60){ somPx += delta; somTijd += dt; }
+        }
+        vorigeX = x;
+      }
+      if(somTijd >= 1){
+        echtePx = somPx / somTijd;
+        fps = frames / somTijd;
+        somPx = 0; somTijd = 0; frames = 0;
+      }
+      const tempo = breedte > 0 ? Math.abs(echtePx) / breedte : 0;
+      box.textContent = regelsConfig +
+        'gemeten      ' + echtePx.toFixed(1) + ' px/s\n' +
+        'fps          ' + fps.toFixed(0) + '\n' +
+        'beeldbreedte ' + breedte.toFixed(0) + ' px\n' +
+        'tempo        ' + tempo.toFixed(3) + ' beelden/s';
+      requestAnimationFrame(meet);
+    };
+
+    berekenConfig();
+    requestAnimationFrame(meet);
+    addEventListener('resize', berekenConfig);
+    addEventListener('orientationchange', () => setTimeout(berekenConfig, 300));
   }
   </script>
 
