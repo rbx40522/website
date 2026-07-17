@@ -35,5 +35,35 @@
   <script src="projects.js"></script>
   <script src="app.js"></script>
 
+  <!-- TIJDELIJK — meethulp, alleen zichtbaar op ...html#maat. In zijn geheel weg te halen. -->
+  <script>
+  if(location.hash === '#maat'){
+    const box = document.createElement('div');
+    box.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9999;'
+      + 'background:#000;color:#0f0;font:12px/1.5 monospace;padding:12px 16px;border:1px solid #0f0;'
+      + 'white-space:pre;text-align:left;pointer-events:none';
+    document.body.appendChild(box);
+    const toon = () => {
+      const stage = document.getElementById('stage');
+      const w = stage.clientWidth  || innerWidth;
+      const h = stage.clientHeight || innerHeight;
+      const factor = w <= (CONFIG.mobiel_breakpoint ?? 700) ? (CONFIG.mobiel_snelheidsfactor ?? 1) : 1;
+      const speed = (CONFIG.snelheid ?? 34) * factor;
+      const beeldbreedte = h * 16/9;
+      box.textContent =
+        'venster      ' + innerWidth + ' x ' + innerHeight + '\n' +
+        'stage        ' + w + ' x ' + h + '\n' +
+        'dpr          ' + devicePixelRatio + '\n' +
+        'mobielfactor ' + factor + '\n' +
+        'snelheid     ' + speed.toFixed(0) + ' px/s\n' +
+        'beeld 16:9   ' + beeldbreedte.toFixed(0) + ' px breed\n' +
+        'tempo        ' + (speed / beeldbreedte).toFixed(3) + ' beelden/s';
+    };
+    toon();
+    addEventListener('resize', toon);
+    addEventListener('orientationchange', () => setTimeout(toon, 300));
+  }
+  </script>
+
 </body>
 </html>
