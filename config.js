@@ -28,6 +28,10 @@ window.CONFIG = {
   // Maximumsnelheid, om te voorkomen dat een heel snelle swipe ongecontroleerd doorschiet.
   maximum_snelheid: 2400,
 
+  // Hoeveel beelden vooruit alvast in de cache worden geladen. Hoger = minder kans
+  // op zwarte gaten bij traag/wisselend internet, maar meer downloads tegelijk.
+  beelden_vooruit_laden: 10,
+
   // Op smalle schermen (mobiel) zijn beelden relatief veel breder dan het
   // scherm, waardoor dezelfde snelheid trager aanvoelt. Deze factor
   // verhoogt de snelheid op schermen tot en met "mobiel_breakpoint".

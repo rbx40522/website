@@ -90,13 +90,47 @@
 
   let sequence = buildRun(null);
   let seqPtr = 0;
-  function nextItem(){
-    if(seqPtr >= sequence.length){
-      const lastId = sequence[sequence.length-1].project;
-      sequence = buildRun(lastId);
-      seqPtr = 0;
+
+  function extendSequence(){
+    const lastId = sequence.length ? sequence[sequence.length-1].project : null;
+    sequence = sequence.concat(buildRun(lastId));
+  }
+
+  // -------- cache vooruit warmen (tegen zwarte gaten bij traag internet) --------
+  // Zonder dit begint een beeld pas te laden als z'n slot bijna in beeld schuift;
+  // op wisselend internet is het dan te laat en zie je de zwarte item-achtergrond.
+  // Daarom halen we de eerstvolgende beelden alvast op — in vertoonvolgorde, dus
+  // wat als eerste in beeld komt, wordt ook als eerste gedownload — zodat ze al in
+  // de browsercache staan tegen de tijd dat hun slot echt verschijnt.
+  const PREFETCH_AHEAD = CONFIG.beelden_vooruit_laden ?? 10;
+  let prefetchPtr = 0;
+  const prefetchDone = new Set();
+  const prefetchInFlight = [];   // korte referentie zodat de download niet vroegtijdig wordt opgeruimd
+
+  function warmCache(m){
+    if(m.type !== 'photo') return;        // video's zijn te zwaar om blind vooruit te laden
+    if(prefetchDone.has(m.src)) return;
+    prefetchDone.add(m.src);
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = m.src;
+    prefetchInFlight.push(img);
+    while(prefetchInFlight.length > 60) prefetchInFlight.shift();
+  }
+
+  function pumpPrefetch(){
+    const target = seqPtr + PREFETCH_AHEAD;
+    while(prefetchPtr < target){
+      if(prefetchPtr >= sequence.length) extendSequence();
+      warmCache(sequence[prefetchPtr++]);
     }
-    return sequence[seqPtr++];
+  }
+
+  function nextItem(){
+    if(seqPtr >= sequence.length) extendSequence();
+    const item = sequence[seqPtr++];
+    pumpPrefetch();
+    return item;
   }
 
 
