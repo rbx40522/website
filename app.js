@@ -31,10 +31,22 @@
         // ontbreekt de ratio in projects.js, dan gokken we 16:9 — het beeld
         // wordt dan bijgesneden, maar de band blijft heel
         ratio: (typeof m.ratio === 'number' && m.ratio > 0) ? m.ratio : 16/9,
-        src: m.src
+        src: m.src,
+        srcLite: m.srcLite || ''
       });
     });
   });
+
+  // -------- lichte videoversie bij smalle schermen of trage verbinding --------
+  // Beslist één keer bij het laden. Safari/iOS meldt geen verbindingssnelheid;
+  // daar beslist alleen de schermbreedte.
+  const USE_LITE = (() => {
+    const c = navigator.connection || {};
+    if(c.saveData) return true;
+    if(/^(slow-2g|2g|3g)$/.test(c.effectiveType || '')) return true;
+    if(c.downlink && c.downlink < (CONFIG.lite_onder_mbps ?? 5)) return true;
+    return window.innerWidth <= (CONFIG.mobiel_breakpoint ?? 700);
+  })();
 
 
   // -------- afmetingen: één keer meten, daarna hergebruiken --------
@@ -154,7 +166,7 @@
       el.appendChild(img);
     } else {
       videoEl = document.createElement('video');
-      videoEl.src = m.src;
+      videoEl.src = (USE_LITE && m.srcLite) ? m.srcLite : m.src;
       videoEl.muted = true;
       videoEl.loop = true;
       videoEl.playsInline = true;
@@ -297,6 +309,7 @@
   // pauze zet alleen de horizontale drift stil; videos blijven altijd afspelen.
   // Je pauzeert door op een beeld te tikken, en hervat met een tik, swipe of scroll.
   let paused = false;
+  let infoWanted = false;   // credits horen zichtbaar te zijn zolang de band op een beeld stilstaat
 
   function snapSlotToCenter(slot){
     snapRemaining = stageW/2 - (slot.x + slot.w/2);   // positief = slot moet naar rechts
@@ -356,7 +369,7 @@
         paused = false;
       } else {
         const tapped = findSlotAt(dragStartX);
-        if(tapped) snapSlotToCenter(tapped);
+        if(tapped){ snapSlotToCenter(tapped); showInfo(); }
       }
     }
   }
@@ -398,13 +411,10 @@
   let panelOpen = false;
 
   function updateTitleAffordance(){
-    // no info text? title acts as plain label, no click needed
-    const hasInfo = currentInfo.trim().length > 0;
-    titleEl.style.cursor = hasInfo ? 'pointer' : 'default';
     titleEl.setAttribute('aria-expanded', String(panelOpen));
-    titleEl.setAttribute('aria-label', hasInfo
-      ? (panelOpen ? 'verberg informatie over dit project' : 'toon informatie over dit project')
-      : 'projecttitel');
+    titleEl.setAttribute('aria-label', paused
+      ? 'hervat de band'
+      : 'zet de band stil bij dit project');
   }
 
   function setPanelOpen(open){
@@ -415,17 +425,27 @@
     updateTitleAffordance();
   }
 
-  titleEl.addEventListener('click', () => setPanelOpen(!panelOpen));
-  // klik buiten het paneel sluit het weer
-  document.addEventListener('click', (e) => {
-    if(!panelOpen) return;
-    if(e.target === titleEl || titleEl.contains(e.target)) return;
-    if(panelEl.contains(e.target)) return;
-    setPanelOpen(false);
+  // klik op de titel = tik op het beeld: het beeld van dit project blijft staan
+  // (met de info eronder); nogmaals klikken laat de band weer doorlopen.
+  titleEl.addEventListener('click', () => {
+    if(paused){
+      paused = false;
+    } else {
+      const centerX = stageW/2;
+      const current = slots.find(s => s.x <= centerX && centerX < s.x + s.w);
+      if(current){ snapSlotToCenter(current); showInfo(); }
+    }
+    updateTitleAffordance();
   });
-  // Escape sluit ook
+  // De credits staan zichtbaar zolang de band stilstaat (tik op beeld of titel) en
+  // verdwijnen zodra hij weer doorloopt — zie de controle in frameLoop.
+  function showInfo(){
+    infoWanted = true;
+    setPanelOpen(true);
+  }
+  // Escape hervat de band (en sluit daarmee de credits)
   document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape' && panelOpen) setPanelOpen(false);
+    if(e.key === 'Escape' && paused){ snapRemaining = 0; paused = false; }
   });
 
   let lastProject = null;
@@ -460,12 +480,21 @@
     }
     ensureFilled();
 
+    // band loopt weer (tik, swipe, scroll, spatie of Escape): credits weg
+    if(infoWanted && !paused){
+      infoWanted = false;
+      setPanelOpen(false);
+      updateTitleAffordance();
+    }
+
     const centerX = stageW/2;
     const center = slots.find(s => s.x <= centerX && centerX < s.x + s.w);
     if(center && center.m.project !== lastProject){
       lastProject = center.m.project;
-      // sluit het paneel bij projectwissel — anders staat oude info bij nieuw beeld
-      if(panelOpen) setPanelOpen(false);
+      // sluit het paneel bij projectwissel — anders staat oude info bij nieuw beeld.
+      // Niet als de band bewust stilgezet is: dan schuift het aangetikte beeld naar
+      // het midden en wordt de tekst hieronder bijgewerkt.
+      if(panelOpen && !paused) setPanelOpen(false);
       titleEl.classList.add('fade');
       setTimeout(() => {
         // bij snel swipen staan er meerdere fades klaar; alleen de laatste telt
@@ -473,6 +502,8 @@
         titleEl.textContent  = center.m.title;
         currentInfo = center.m.info || '';
         infoTextEl.textContent = currentInfo;
+        // stilgezet op dit project: de credits horen bij het nieuwe beeld
+        if(infoWanted) setPanelOpen(currentInfo.trim().length > 0);
         updateTitleAffordance();
         titleEl.classList.remove('fade');
       }, FADE_MS);

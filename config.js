@@ -39,4 +39,9 @@ window.CONFIG = {
   mobiel_snelheidsfactor: 2.5,
   mobiel_breakpoint: 700,      // schermbreedte (px) waaronder de factor geldt
 
+  // Video's met een "srcLite" in projects.js spelen de lichte versie af op smalle
+  // schermen (zie mobiel_breakpoint), bij databesparing, bij 3g of trager, of als
+  // de gemeten verbinding onder deze snelheid ligt. Anders de full-HD versie.
+  lite_onder_mbps: 5,          // megabit per seconde
+
 };

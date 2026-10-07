@@ -77,6 +77,16 @@ Video's: H.264 mp4, zonder audio, 5–15 sec, doel < 3 MB
          (Media Encoder-preset: H.264, VBR 1-pass, ~2,5 Mbps,
           960 of 1280 px breed, audio uitvinken)
 
+         Twee versies (optioneel): een full-HD bestand als "src" en
+         een lichte 720p-versie (ca. 3 MB) als "srcLite" in projects.js.
+         De lichte versie wordt gebruikt op smalle schermen, bij
+         databesparing en bij een trage verbinding (drempel in
+         config.js: lite_onder_mbps). Zonder srcLite speelt altijd "src".
+         Omzetten met ffmpeg (zonder audio):
+             ffmpeg -i in.mov -an -vf scale=1920:1080,setsar=1 -c:v libx264 -preset slow -crf 21 -maxrate 6M -bufsize 10M -pix_fmt yuv420p -movflags +faststart uit.mp4
+             ffmpeg -i in.mov -an -vf scale=1280:720,setsar=1 -c:v libx264 -preset slow -crf 25 -maxrate 2.5M -bufsize 4M -pix_fmt yuv420p -movflags +faststart uit_lite.mp4
+         (staande video: wissel de maten om, 1080:1920 en 720:1280)
+
 
 LOKAAL TESTEN
 -------------

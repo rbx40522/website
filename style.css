@@ -158,13 +158,12 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
-  transition: opacity var(--fade-duur) ease;
-}
-#title:hover,
-#title:focus-visible {
   text-decoration: underline;
   text-underline-offset: 3px;
+  transition: opacity var(--fade-duur) ease;
 }
+/* zonder titel (bijv. de schetsen) valt er niets te klikken */
+#title:empty { pointer-events: none; }
 #title:focus-visible {
   outline: 2px solid #fff;
   outline-offset: -2px;

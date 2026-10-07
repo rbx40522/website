@@ -15,6 +15,8 @@
 //    - video's: { type: "video", src: "media/<map>/<bestand>", ratio: <getal>, photographer: "" }
 //    - video's: H.264 mp4, zonder audio, het liefst < 3 MB
 //    - foto's:  WebP, ca. 1600 px hoog
+//    - video's mogen een lichte versie hebben: srcLite: "media/<map>/<bestand>_lite.mp4"
+//      (720p, ca. 3 MB). Die wordt gebruikt op mobiel/trage verbinding; "src" is full HD.
 //
 //  "ratio" = breedte gedeeld door hoogte. Dit getal MOET erbij:
 //  de site gebruikt het om de plek van het beeld te reserveren
@@ -56,8 +58,7 @@ window.PROJECTS = [
     info: "video design\ndir: Susanne Kennedy\nMünchner Kammerspiele 2019",
     media: [
       { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.webp", ratio: 1.000, photographer: "Photo: Judith Buss" },
-      // let op: dit bestand is 960x540, maar speelt af als 2.137 (niet-vierkante pixels)
-      { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", ratio: 2.137, photographer: "" },
+      { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", srcLite: "media/drei-schwestern/drei-schwestern_clip1_lite.mp4", ratio: 2.133, photographer: "" },
       { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.webp", ratio: 1.569, photographer: "Photo: Judith Buss" },
       { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.webp", ratio: 1.779, photographer: "Photo: Judith Buss" },
     ]
@@ -102,6 +103,8 @@ window.PROJECTS = [
     info: "video design\ndir: Boogaerdt/VanderSchoot\nTheater der Welt Frankfurt - Offenbach 2023",
     media: [
       { type: "photo", src: "media/echos/BVDS-Echos-Chambers-2-webres-scaled.webp", ratio: 1.499, photographer: "Photo: Willem Popelier" },
+      { type: "video", src: "media/echos/echos_clip1.mp4", srcLite: "media/echos/echos_clip1_lite.mp4", ratio: 0.5625, photographer: "" },
+      { type: "video", src: "media/echos/echos_clip2.mp4", srcLite: "media/echos/echos_clip2_lite.mp4", ratio: 0.5625, photographer: "" },
     ]
   },
 
@@ -118,7 +121,36 @@ window.PROJECTS = [
     info: "video design\ndir: Boogaerdt/VanderSchoot\nTheater Rotterdam 2024",
     media: [
       { type: "photo", src: "media/Songofsongs/1_SONGOFSONGS_WillemPopelier-webres.webp", ratio: 1.375, photographer: "Photo: Willem Popelier" },
+      { type: "video", src: "media/Songofsongs/songofsongs_clip1.mp4", srcLite: "media/Songofsongs/songofsongs_clip1_lite.mp4", ratio: 1.778, photographer: "" },
+      { type: "photo", src: "media/Songofsongs/4_SONGOFSONGS_WillemPopelier-webres.webp", ratio: 1.498, photographer: "Photo: Willem Popelier" },
       { type: "photo", src: "media/Songofsongs/6_SONGOFSONGS_WillemPopelier-webres.webp", ratio: 1.679, photographer: "Photo: Willem Popelier" },
+    ]
+  },
+
+  {
+    title: "WOMBTOMBS",
+    info: "video design\ndir: Boogaerdt/VanderSchoot\nMU Hybrid Art House Eindhoven 2024",
+    media: [
+      { type: "video", src: "media/wombtombs/wombtombs_clip1.mp4", srcLite: "media/wombtombs/wombtombs_clip1_lite.mp4", ratio: 1.778, photographer: "" },
+    ]
+  },
+
+  {
+    title: "12 Ways",
+    info: "music video for Diamanda La Berge Dramm",
+    media: [
+      { type: "video", src: "media/12-ways/12-ways_clip1.mp4", srcLite: "media/12-ways/12-ways_clip1_lite.mp4", ratio: 1.778, photographer: "" },
+    ]
+  },
+
+  // schetsen: bewust zonder titel en info
+  {
+    title: "",
+    info: "",
+    media: [
+      { type: "video", src: "media/sketches/sketch_01.mp4", srcLite: "media/sketches/sketch_01_lite.mp4", ratio: 1.778, photographer: "" },
+      { type: "video", src: "media/sketches/sketch_02.mp4", srcLite: "media/sketches/sketch_02_lite.mp4", ratio: 1.778, photographer: "" },
+      { type: "video", src: "media/sketches/sketch_03.mp4", srcLite: "media/sketches/sketch_03_lite.mp4", ratio: 1.778, photographer: "" },
     ]
   },
 
