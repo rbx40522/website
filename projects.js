@@ -60,7 +60,6 @@ window.PROJECTS = [
       { type: "photo", src: "media/drei-schwestern/drei-schwestern_01.webp", ratio: 1.000, photographer: "Photo: Judith Buss" },
       { type: "video", src: "media/drei-schwestern/drei-schwestern_clip1.mp4", srcLite: "media/drei-schwestern/drei-schwestern_clip1_lite.mp4", ratio: 2.133, photographer: "" },
       { type: "photo", src: "media/drei-schwestern/drei-schwestern_02.webp", ratio: 1.569, photographer: "Photo: Judith Buss" },
-      { type: "photo", src: "media/drei-schwestern/drei-schwestern_03.webp", ratio: 1.779, photographer: "Photo: Judith Buss" },
     ]
   },
 
